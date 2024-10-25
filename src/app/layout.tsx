@@ -6,8 +6,11 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "URL Shortener",
-  description: "A simple URL shortener and redirect service",
+  title: {
+    template: "%s | URL Shortener",
+    default: "URL Shortener",
+  },
+  description: "Short your long url easily and share with your friends",
 };
 
 export default function RootLayout({

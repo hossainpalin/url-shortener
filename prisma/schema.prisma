@@ -10,7 +10,20 @@ datasource db {
 model User {
   id       String @id @default(cuid())
   username String @unique
+
+  sessions Session[]
   urls     Url[]
+}
+
+model Session {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Url {
