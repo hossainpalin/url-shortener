@@ -27,12 +27,12 @@ model Session {
 }
 
 model Url {
-  id       String @id @default(cuid())
-  original String
-  shortUrl String @unique
-  userId   String
-  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  visits   Int    @default(0)
+  id          String @id @default(cuid())
+  originalUrl String
+  shortCode   String @unique
+  userId      String
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  visits      Int?   @default(0)
 
   createdAt DateTime @default(now())
 }

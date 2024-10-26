@@ -3,7 +3,7 @@
 import { signUpAction } from "@/actions/auth.actions";
 import { User, userSchema } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { FormError } from "../form-status";
 import LoadingButton from "../loading-button";
@@ -38,6 +38,12 @@ export default function SignUpForm() {
       }
     });
   };
+
+  useEffect(() => {
+    if (error) {
+      setTimeout(() => setError(null), 2000);
+    }
+  }, [error]);
 
   return (
     <Form {...form}>
