@@ -13,7 +13,7 @@ export const createUrlAction = async (url: Url) => {
   try {
     // Check if the user is authenticated
     if (!user) {
-      return { error: "You must be authenticated to create a URL" };
+      throw new Error("You must be authenticated to get a URL");
     }
 
     const { originalUrl } = urlSchema.parse(url);
@@ -58,7 +58,7 @@ export const getUrlsByUser = async () => {
   try {
     // Check if the user is authenticated
     if (!user) {
-      return { error: "You must be authenticated to get a URL" };
+      throw new Error("You must be authenticated to get a URL");
     }
 
     // Get the URL from the database
@@ -90,7 +90,7 @@ export const deleteUrlAction = async (id: string) => {
   try {
     // Check if the user is authenticated
     if (!user) {
-      return { error: "You must be authenticated to delete a URL" };
+      throw new Error("You must be authenticated to get a URL");
     }
 
     // Check if the URL exists
@@ -113,6 +113,80 @@ export const deleteUrlAction = async (id: string) => {
     await prisma.url.delete({
       where: {
         id: id,
+      },
+    });
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    console.error(error);
+    return { error: "Something went wrong, Please try again" };
+  }
+
+  revalidatePath("/");
+};
+
+// Get URL by short code action
+export const getUrlByShortCode = async (shortCode: string) => {
+  const { user } = await validateUser();
+
+  try {
+    // Check if the user is authenticated
+    if (!user) {
+      throw new Error("You must be authenticated to get a URL");
+    }
+
+    // Get the URL from the database
+    const url = await prisma.url.findFirst({
+      where: {
+        shortCode: {
+          equals: shortCode,
+        },
+      },
+    });
+
+    if (!url) {
+      return { error: "URL does not exist" };
+    }
+
+    return { url };
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    console.error(error);
+    return { error: "Something went wrong, Please try again" };
+  }
+};
+
+// Update URL visits action
+export const updateUrlVisits = async (shortCode: string) => {
+  const { user } = await validateUser();
+
+  try {
+    // Check if the user is authenticated
+    if (!user) {
+      throw new Error("You must be authenticated to get a URL");
+    }
+
+    // Get the URL from the database
+    const url = await prisma.url.findFirst({
+      where: {
+        shortCode: {
+          equals: shortCode,
+        },
+      },
+    });
+
+    if (!url) {
+      return { error: "URL does not exist" };
+    }
+
+    // Update the URL visits
+    await prisma.url.update({
+      where: {
+        id: url.id,
+      },
+      data: {
+        visits: {
+          increment: 1,
+        },
       },
     });
   } catch (error) {
