@@ -15,8 +15,7 @@ export default function UrlCard({ url }: { url: Url }) {
   const router = useRouter();
 
   // Shortener URL
-  const shortenerUrl = (code: string) =>
-    `${process.env.NEXT_PUBLIC_BASE_URL}/${code}`;
+  const shortenerUrl = (code: string) => `tinyx-url.vercel.app/${code}`;
 
   // Delete URL
   const handleDeleteUrl = (id: string) => {
